@@ -6,6 +6,8 @@ namespace Rover.Domain
     // TODO: Base clase for value types.
     public struct Coordinates : IEquatable<Coordinates>
     {
+        public static Coordinates Unknown = new Coordinates(true);
+
         public Coordinates(int x, int y)
         {
             if (x < 0)
@@ -20,6 +22,12 @@ namespace Rover.Domain
 
             X = x;
             Y = y;
+        }
+
+        private Coordinates(bool fake)
+        {
+            X = -1;
+            Y = -1;
         }
 
         public int X { get; }

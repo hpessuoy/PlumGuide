@@ -25,7 +25,7 @@ namespace Rover.Domain
                 return true;
             }
 
-            return _obstacleQuery.Execute(Location.Coordinates);
+            return !_obstacleQuery.Execute(Location.Coordinates);
         }
     }
 }

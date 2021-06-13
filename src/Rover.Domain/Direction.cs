@@ -5,6 +5,7 @@
         North,
         East,
         South,
-        West
+        West,
+        Unknown
     }
 }

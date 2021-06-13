@@ -11,7 +11,7 @@ namespace Rover.Domain
         {
             Status = status;
             Current = current;
-            Obstacle = default;
+            Obstacle = Location.Unknown;
         }
 
         public MoveResult(

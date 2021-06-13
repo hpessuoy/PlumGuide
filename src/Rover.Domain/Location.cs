@@ -5,6 +5,8 @@ namespace Rover.Domain
 {
     public struct Location : IEquatable<Location>
     {
+        public static Location Unknown = new Location(Coordinates.Unknown, Direction.Unknown);
+
         public Location(Coordinates coordinates, Direction direction)
         {
             Coordinates = coordinates;
