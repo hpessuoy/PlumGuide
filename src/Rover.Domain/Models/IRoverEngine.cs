@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 
-namespace Rover.Domain
+namespace Rover.Domain.Models
 {
-    // TODO: keep one method and use async
     public interface IRoverEngine
     {
         MoveResult TryMove(Location location, Command command);

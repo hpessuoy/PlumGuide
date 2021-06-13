@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 
-namespace Rover.Domain
+namespace Rover.Domain.Models
 {
     public class RoverQuery : IQuery<Location, string>
     {

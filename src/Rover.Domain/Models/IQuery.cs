@@ -1,4 +1,4 @@
-﻿namespace Rover.Domain
+﻿namespace Rover.Domain.Models
 {
     /// <summary>
     /// Represent a query which return a <para name="TResult"/> result from a <para name="TParameter"/> parameter

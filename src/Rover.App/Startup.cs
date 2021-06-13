@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Rover.Domain;
+using Rover.Domain.Models;
 using Rover.Domain.Service;
 using Rover.Infra;
 using System.Reflection;

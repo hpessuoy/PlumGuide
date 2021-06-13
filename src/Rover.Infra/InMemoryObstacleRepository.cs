@@ -1,4 +1,4 @@
-﻿using Rover.Domain;
+﻿using Rover.Domain.Models;
 using System.Collections.Generic;
 using System.Linq;
 

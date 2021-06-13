@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rover.Domain
+namespace Rover.Domain.Models
 {
     public class ObstacleDetector : IObstacleDetector
     {

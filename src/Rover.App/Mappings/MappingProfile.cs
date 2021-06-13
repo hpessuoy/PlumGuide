@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Rover.App.Controllers.Rover.Dtos;
-using Rover.Domain;
+using Rover.Domain.Models;
 
 namespace Rover.App.Mappings
 {

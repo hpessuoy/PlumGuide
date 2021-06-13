@@ -4,6 +4,7 @@ using NUnit.Framework;
 using FluentAssertions;
 using Moq;
 using System.Collections.Generic;
+using Rover.Domain.Models;
 
 namespace Rover.Domain.Tests
 {
@@ -12,7 +13,7 @@ namespace Rover.Domain.Tests
         [Test, AutoMoqData]
         public void Guards(GuardClauseAssertion assertion)
         {
-            assertion.Verify(typeof(Rover));
+            assertion.Verify(typeof(Models.Rover));
         }
 
         [Test, AutoMoqData]
@@ -20,7 +21,7 @@ namespace Rover.Domain.Tests
             IEnumerable<Command> commands,
             MoveResult expected,
             [Frozen] IRoverEngine roverEngine,
-            Rover sut)
+            Models.Rover sut)
         {
             // Arrange
             Mock.Get(roverEngine)

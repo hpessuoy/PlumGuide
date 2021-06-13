@@ -1,7 +1,7 @@
 ﻿using Rover.Domain.Helpers;
 using System;
 
-namespace Rover.Domain
+namespace Rover.Domain.Models
 {
     public struct MoveResult : IEquatable<MoveResult>
     {

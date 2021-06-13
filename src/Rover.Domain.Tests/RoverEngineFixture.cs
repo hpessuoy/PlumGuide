@@ -3,6 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using Rover.Domain.Models;
 using System.Collections.Generic;
 
 namespace Rover.Domain.Tests

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rover.Domain
+namespace Rover.Domain.Models
 {
     public class RoverEngine : IRoverEngine
     {

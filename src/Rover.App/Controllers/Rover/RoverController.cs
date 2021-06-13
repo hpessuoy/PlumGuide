@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Rover.App.Controllers.Rover.Dtos;
-using Rover.Domain;
+using Rover.Domain.Models;
 using Rover.Domain.Service;
 using System;
 using System.Linq;
@@ -44,13 +44,6 @@ namespace Rover.App.Controllers.Rover
                 return BadRequest("Invalid commands");
             }
 
-            var rover = _roverService.Get(moveDto.Name);
-
-            if (rover.Location == Location.Unknown)
-            {
-                return BadRequest($"Unknow Rover: \"{moveDto.Name}\"");
-            }
-
             // TODO: Handle errors. Right now, unknown commands are ignored.
             // TODO: Adds Command size max.
             var commands = moveDto.Commands.Select(cmd => ToCommand(cmd)).Where(cmd => cmd != Command.Unknown);
@@ -59,7 +52,7 @@ namespace Rover.App.Controllers.Rover
                 return Problem($"Empty or unknown commands: {moveDto.Commands}");
             }
 
-            MoveResult moveResult = rover.TryMove(commands);
+            var moveResult = _roverService.TryMove(moveDto.Name, commands);
             //var result = _mapper.Map<MoveStatusDto>(moveResult);
             var result = new MoveResultDto()
             {

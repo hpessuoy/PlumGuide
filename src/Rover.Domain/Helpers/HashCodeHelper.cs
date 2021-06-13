@@ -1,5 +1,6 @@
 ﻿namespace Rover.Domain.Helpers
 {
+    // TODO: move it to the infra layer if needed.
     public static class HashCodeHelper
     {
         public static int CombineHashCodes(int h1, int h2)

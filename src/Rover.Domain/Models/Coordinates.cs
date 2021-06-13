@@ -1,7 +1,7 @@
 ﻿using Rover.Domain.Helpers;
 using System;
 
-namespace Rover.Domain
+namespace Rover.Domain.Models
 {
     // TODO: Base clase for value types.
     public struct Coordinates : IEquatable<Coordinates>
