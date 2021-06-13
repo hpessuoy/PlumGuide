@@ -44,8 +44,7 @@ namespace Rover.App
 
             builder.RegisterType<RoverEngine>().AsImplementedInterfaces().SingleInstance();
 
-            builder.RegisterType<RoverQuery>().Named<IQuery<Location, string>>("handler").SingleInstance();
-            builder.RegisterDecorator<IQuery<Location, string>>((c, inner) => new CachedRoverQuery(inner), fromKey: "handler").SingleInstance();
+            builder.RegisterType<RoverQuery>().AsImplementedInterfaces().SingleInstance();
 
             builder.RegisterType<ObstacleQuery> ().Named<IQuery<bool, Coordinates>>("handler").SingleInstance();
             builder.RegisterDecorator<IQuery<bool, Coordinates>>((c, inner) => new CachedObstacleQuery(inner), fromKey: "handler").SingleInstance();

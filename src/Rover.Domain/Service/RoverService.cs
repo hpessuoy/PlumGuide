@@ -9,14 +9,18 @@ namespace Rover.Domain.Service
         private readonly IRoverEngine _roverEngine;
         private readonly IQuery<Location, string> _roverQuery;
         private readonly IObstacleRepository _obstacleRepository;
+        private readonly IRoverRepository _roverRepository;
+
         public RoverService(
             IRoverEngine roverEngine,
             IQuery<Location, string> roverQuery,
-            IObstacleRepository obstacleRepository)
+            IObstacleRepository obstacleRepository,
+            IRoverRepository roverRepository)
         {
             _roverEngine = roverEngine ?? throw new ArgumentNullException(nameof(roverEngine));
             _roverQuery = roverQuery ?? throw new ArgumentNullException(nameof(roverQuery));
             _obstacleRepository = obstacleRepository ?? throw new ArgumentNullException(nameof(obstacleRepository));
+            _roverRepository = roverRepository ?? throw new ArgumentNullException(nameof(roverRepository));
         }
 
         public Models.Rover Get(string name)
@@ -57,8 +61,8 @@ namespace Rover.Domain.Service
 
             var result = rover.TryMove(commands);
 
-            // TODO: Persist the current location of the rover.
-            
+            _roverRepository.Update(rover);
+
             return result;
         }
     }

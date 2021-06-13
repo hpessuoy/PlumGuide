@@ -23,5 +23,15 @@ namespace Rover.Infra
 
             return _roverLocations.TryGetValue(name, out location);
         }
+
+        public void Update(Domain.Models.Rover rover)
+        {
+            if (rover is null)
+            {
+                throw new ArgumentNullException(nameof(rover));
+            }
+
+            _roverLocations[rover.Name] = rover.Location;
+        }
     }
 }
