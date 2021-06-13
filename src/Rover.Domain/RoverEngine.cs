@@ -1,64 +1,76 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rover.Domain
 {
     public class RoverEngine : IRoverEngine
     {
         private readonly IGridConfiguration _gridConfiguration;
+        private readonly IObstacleDetector _obstacleDetector;
 
-        public RoverEngine(IGridConfiguration gridConfiguration)
+        public RoverEngine(
+            IGridConfiguration gridConfiguration,
+            IObstacleDetector obstacleDetector)
         {
-            _gridConfiguration = gridConfiguration ??
-                throw new ArgumentNullException(nameof(gridConfiguration));
+            _gridConfiguration = gridConfiguration ?? throw new ArgumentNullException(nameof(gridConfiguration));
+            _obstacleDetector = obstacleDetector ?? throw new ArgumentNullException(nameof(obstacleDetector));
         }
 
-        public Location Move(
+        public MoveResult TryMove(
             Location location,
             IEnumerable<Command> commands)
         {
-            if (location is null)
-            {
-                throw new ArgumentNullException(nameof(location));
-            }
-
-            if (commands is null)
+            if (commands is null || !commands.Any())
             {
                 throw new ArgumentNullException(nameof(commands));
             }
 
-            var result = location;
+            MoveResult result = default;
+            var nextLocation = location;
             foreach (var command in commands)
             {
-                result = Move(result, command);
+                result = TryMove(nextLocation, command);
+                if (result.Status != MoveStatus.Success)
+                {
+                    break;
+                }
+                nextLocation = result.Current;
             }
 
             return result;
         }
 
-        public Location Move(
+        public MoveResult TryMove(
             Location location,
             Command command)
         {
-            if (location is null)
+            try
             {
-                throw new ArgumentNullException(nameof(location));
-            }
+                var nextLocation = command switch
+                {
+                    Command.Forward => MoveForward(location),
+                    Command.Backward => MoveBackward(location),
+                    Command.Right => TurnRight(location),
+                    Command.Left => TurnLeft(location),
+                    _ => throw new NotSupportedException(),
+                };
 
-            switch (command)
-            {
-                case Command.Forward:
-                    return MoveForward(location);
-                case Command.Backward:
-                    return MoveBackward(location);
-                case Command.Right:
-                    return TurnRight(location);
-                case Command.Left:
-                    return TurnLeft(location);
-                default:
-                    break;
+                if (_obstacleDetector.IsAccessible(command, nextLocation))
+                {
+                    return new MoveResult(MoveStatus.Success, nextLocation);
+                }
+
+                return new MoveResult(MoveStatus.Obstacle, location, nextLocation);
             }
-            throw new NotSupportedException();
+            catch (NotSupportedException)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+                return new MoveResult(MoveStatus.Failure, location);
+            }
         }
 
         private Location MoveForward(Location location)

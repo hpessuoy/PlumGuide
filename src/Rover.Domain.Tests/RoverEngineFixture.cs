@@ -3,9 +3,11 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace Rover.Domain.Tests
 {
+    // TODO: Use customization to simplify input data.
     public class RoverEngineFixture
     {
         [Test, AutoMoqData]
@@ -33,6 +35,7 @@ namespace Rover.Domain.Tests
             int expectedY,
             Direction expectedDirection,
             [Frozen] IGridConfiguration gridConfiguration,
+            [Frozen] IObstacleDetector obstacleDetector,
             RoverEngine sut)
         {
             RunCommand(
@@ -46,6 +49,7 @@ namespace Rover.Domain.Tests
                 expectedY,
                 expectedDirection,
                 gridConfiguration,
+                obstacleDetector,
                 sut);
         }
 
@@ -68,6 +72,7 @@ namespace Rover.Domain.Tests
             int expectedY,
             Direction expectedDirection,
             [Frozen] IGridConfiguration gridConfiguration,
+            [Frozen] IObstacleDetector obstacleDetector,
             RoverEngine sut)
         {
             RunCommand(
@@ -81,6 +86,7 @@ namespace Rover.Domain.Tests
                 expectedY,
                 expectedDirection,
                 gridConfiguration,
+                obstacleDetector,
                 sut);
         }
 
@@ -99,6 +105,7 @@ namespace Rover.Domain.Tests
             int expectedY,
             Direction expectedDirection,
             [Frozen] IGridConfiguration gridConfiguration,
+            [Frozen] IObstacleDetector obstacleDetector,
             RoverEngine sut)
         {
             RunCommand(
@@ -112,6 +119,7 @@ namespace Rover.Domain.Tests
                 expectedY,
                 expectedDirection,
                 gridConfiguration,
+                obstacleDetector,
                 sut);
         }
 
@@ -130,6 +138,7 @@ namespace Rover.Domain.Tests
             int expectedY,
             Direction expectedDirection,
             [Frozen] IGridConfiguration gridConfiguration,
+            [Frozen] IObstacleDetector obstacleDetector,
             RoverEngine sut)
         {
             RunCommand(
@@ -143,6 +152,7 @@ namespace Rover.Domain.Tests
                 expectedY,
                 expectedDirection,
                 gridConfiguration,
+                obstacleDetector,
                 sut);
         }
 
@@ -162,6 +172,7 @@ namespace Rover.Domain.Tests
             int expectedY,
             Direction expectedDirection,
             [Frozen] IGridConfiguration gridConfiguration,
+            [Frozen] IObstacleDetector obstacleDetector,
             RoverEngine sut)
         {
             RunCommand(
@@ -175,6 +186,7 @@ namespace Rover.Domain.Tests
                 expectedY,
                 expectedDirection,
                 gridConfiguration,
+                obstacleDetector,
                 sut);
         }
 
@@ -188,30 +200,117 @@ namespace Rover.Domain.Tests
             int expectedX,
             int expectedY,
             Direction expectedDirection,
-            [Frozen] IGridConfiguration gridConfiguration,
+            IGridConfiguration gridConfiguration,
+            IObstacleDetector obstacleDetector,
             RoverEngine sut)
         {
             // Arrange
+            SetupGridConfiguration(xMax, yMax, gridConfiguration);
+
+            Mock.Get(obstacleDetector)
+                .Setup(o => o.IsAccessible(It.IsAny<Command>(), It.IsAny<Location>()))
+                .Returns(true);
+
+            var currentLocation = new Location(new Coordinates(currentX, currentY), currentDirection);
+            var expected = new Location(new Coordinates(expectedX, expectedY), expectedDirection);
+
+            // Act
+            var actual = sut.TryMove(currentLocation, commands);
+
+            // Assert
+            actual.Current.Should().Be(expected);
+            actual.Status.Should().Be(MoveStatus.Success);
+        }
+
+        [Test]
+        [InlineAutoMoqData(
+            4, 4, new int[] { 0, 2, 1, 2 },
+            0, 0, Direction.North, 
+            new Command[] { Command.Forward, Command.Forward }, 
+            0, 1, Direction.North, MoveStatus.Obstacle, 0, 2, Direction.North)]
+        [InlineAutoMoqData(
+            5, 5, new int[] { 2, 2, 3, 3 }, 
+            1, 0, Direction.North,
+            new Command[] { Command.Forward, Command.Forward, Command.Right, Command.Right, Command.Right, Command.Forward },
+            0, 2, Direction.West, MoveStatus.Success, -1, -1, Direction.West)]
+        public void WhenThereAreObstaclesTheRoverShouldBehaveCorrectly(
+            int xMax,
+            int yMax,
+            int[] obstacles,
+            int currentX,
+            int currentY,
+            Direction currentDirection,
+            Command[] commands,
+            int expectedX,
+            int expectedY,
+            Direction expectedDirection,
+            MoveStatus expectedMoveStatus,
+            int obstacleX,
+            int obstacleY,
+            Direction obstacleDirection,
+            [Frozen] IGridConfiguration gridConfiguration,
+            [Frozen] IObstacleDetector obstacleDetector,
+            RoverEngine sut)
+        {
+            // Arrange
+            SetupDependencies(xMax, yMax, obstacles, gridConfiguration, obstacleDetector);
+
+            var currentLocation = new Location(new Coordinates(currentX, currentY), currentDirection);
+            var expectedLocation = new Location(new Coordinates(expectedX, expectedY), expectedDirection);
+            MoveResult expected;
+            if (expectedMoveStatus == MoveStatus.Obstacle)
+            {
+                var expectedObstacleLocation = new Location(new Coordinates(obstacleX, obstacleY), obstacleDirection);
+                expected = new MoveResult(expectedMoveStatus, expectedLocation, expectedObstacleLocation);
+            }
+            else
+            {
+                expected = new MoveResult(expectedMoveStatus, expectedLocation);
+            }
+
+            // Act
+            var actual = sut.TryMove(currentLocation, commands);
+
+            // Assert
+            actual.Should().Be(expected);
+        }
+
+        private void SetupDependencies(
+            int xMax,
+            int yMax,
+            int[] obstacles,
+            IGridConfiguration gridConfiguration,
+            IObstacleDetector obstacleDetector)
+        {
+            SetupGridConfiguration(xMax, yMax, gridConfiguration);
+
+            var obstacleCoordinates = new HashSet<Coordinates>();
+            var i = 0;
+            while (true)
+            {
+                obstacleCoordinates.Add(new Coordinates(obstacles[i], obstacles[++i]));
+                if (i == obstacles.Length - 1)
+                {
+                    break;
+                }
+            }
+
+            Mock.Get(obstacleDetector)
+                .Setup(o => o.IsAccessible(It.IsAny<Command>(), It.IsAny<Location>()))
+                .Returns((Command c, Location loc) => !obstacleCoordinates.Contains(loc.Coordinates));
+        }
+
+        private void SetupGridConfiguration(
+            int xMax,
+            int yMax,
+            IGridConfiguration gridConfiguration)
+        {
             Mock.Get(gridConfiguration)
                 .SetupGet(gConf => gConf.XMax)
                 .Returns(xMax);
             Mock.Get(gridConfiguration)
                 .SetupGet(gConf => gConf.YMax)
                 .Returns(yMax);
-
-            var currentLocation = new Location(
-                new Coordinates(currentX, currentY),
-                currentDirection);
-
-            var expected = new Location(
-                new Coordinates(expectedX, expectedY),
-                expectedDirection);
-
-            // Act
-            var actual = sut.Move(currentLocation, commands);
-
-            // Assert
-            actual.Should().Be(expected);
         }
     }
 }

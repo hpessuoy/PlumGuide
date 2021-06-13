@@ -3,6 +3,7 @@ using System;
 
 namespace Rover.Domain
 {
+    // TODO: Base clase for value types.
     public struct Coordinates : IEquatable<Coordinates>
     {
         public Coordinates(int x, int y)

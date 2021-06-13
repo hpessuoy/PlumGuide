@@ -3,7 +3,7 @@ using System;
 
 namespace Rover.Domain
 {
-    public class Location : IEquatable<Location>
+    public struct Location : IEquatable<Location>
     {
         public Location(Coordinates coordinates, Direction direction)
         {
@@ -16,11 +16,10 @@ namespace Rover.Domain
 
         public Location With(Direction direction) => new Location(Coordinates, direction);
 
-        public bool Equals(Location other) => other is not null
-            && other.Coordinates == Coordinates
+        public bool Equals(Location other) => other.Coordinates == Coordinates
             && other.Direction == Direction;
 
-        public override bool Equals(object obj) => Equals(obj as Location);
+        public override bool Equals(object obj) => obj is Location ? Equals((Location)obj) : false;
 
         public override int GetHashCode() => HashCodeHelper.CombineHashCodes(
             Coordinates.GetHashCode(),

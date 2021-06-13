@@ -4,7 +4,7 @@ namespace Rover.Domain
 {
     public interface IRoverEngine
     {
-        Location Move(Location location, Command command);
-        Location Move(Location location, IEnumerable<Command> commands);
+        MoveResult TryMove(Location location, Command command);
+        MoveResult TryMove(Location location, IEnumerable<Command> commands);
     }
 }

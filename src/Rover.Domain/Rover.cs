@@ -5,9 +5,13 @@ namespace Rover.Domain
 {
     public class Rover
     {
+        private readonly IRoverEngine _roverEngine;
+        private Location _location;
+
         public Rover(
             string name,
-            Location location)
+            Location location,
+            IRoverEngine roverEngine)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -15,25 +19,26 @@ namespace Rover.Domain
             }
 
             Name = name;
-            Location = location ?? throw new ArgumentNullException(nameof(location));
+            _location = location;
+            _roverEngine = roverEngine ?? throw new ArgumentNullException(nameof(roverEngine));
         }
 
         public string Name { get; }
 
-        public Location Location { get; }
+        public Location Location => _location;
 
-        public Location Move(Command command) =>
-            Move(new Command[] { command });
+        public MoveResult TryMove(Command command) => TryMove(new Command[] { command });
 
-        public Location Move(
-            IEnumerable<Command> commands)
+        public MoveResult TryMove(IEnumerable<Command> commands)
         {
             if (commands is null)
             {
                 throw new ArgumentNullException(nameof(commands));
             }
 
-            throw new NotImplementedException();
+            var result = _roverEngine.TryMove(Location, commands);
+            _location = result.Current;
+            return result;
         }
     }
 }
