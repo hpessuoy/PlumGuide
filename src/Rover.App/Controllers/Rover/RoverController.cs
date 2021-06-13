@@ -23,6 +23,11 @@ namespace Rover.App.Controllers.Rover
             _roverService = roverService ?? throw new ArgumentNullException(nameof(roverService));
         }
 
+        /// <summary>
+        /// Gets the location of the given rover. There are three registered rovers: Pluto, Pluto2, and Pluto3
+        /// </summary>
+        /// <param name="name">The given rover name.</param>
+        /// <returns>The location of the given rover.</returns>
         [HttpGet("location")]
         public IActionResult GetLocation([FromQuery] string name)
         {
@@ -36,6 +41,11 @@ namespace Rover.App.Controllers.Rover
             return Ok(location);
         }
 
+        /// <summary>
+        /// Commands the rover to move arround (F: Forward, B: Backward, R: Right, L: Left)
+        /// </summary>
+        /// <param name="moveDto">The name of the rover and the given commands. Example: {"name": "Pluto", "commands": "FFRFF"}</param>
+        /// <returns>The status of the executed command. The current location of the rover and the obstacle position if any.</returns>
         [HttpPost("move")]
         public IActionResult Move([FromBody] MoveDto moveDto)
         {
@@ -64,6 +74,10 @@ namespace Rover.App.Controllers.Rover
             return Ok(result);
         }
 
+        /// <summary>
+        /// Lists all existing obstacles.
+        /// </summary>
+        /// <returns>All existing obstacles</returns>
         [HttpGet("obstacles")]
         public IActionResult GetObstacles()
         {

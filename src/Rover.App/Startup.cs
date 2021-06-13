@@ -11,6 +11,8 @@ using Microsoft.OpenApi.Models;
 using Rover.Domain.Models;
 using Rover.Domain.Service;
 using Rover.Infra;
+using System;
+using System.IO;
 using System.Reflection;
 
 namespace Rover.App
@@ -20,15 +22,40 @@ namespace Rover.App
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "rover_api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Pluto Rover",
+                    Description = "An API that allows the Rover to move around a planet",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Youcef Merzoug",
+                    },
+                });
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
 
             services.AddHealthChecks()
                 .AddCheck(
                     "self",
                     () => HealthCheckResult.Healthy());
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AnyOrigin", builder =>
+                {
+                    builder.AllowAnyHeader()
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod();
+                });
+            });
+
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -65,14 +92,21 @@ namespace Rover.App
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "rover_api"));
+                
+                app.UseCors("AnyOrigin");
+
+                app.UseSwagger(c =>
+                {
+                    c.SerializeAsV2 = true;
+                });
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "rover api v1"));
             }
             else
             {
                 app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
+
 
             app.UseHttpsRedirection();
 
