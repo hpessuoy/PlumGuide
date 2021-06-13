@@ -14,7 +14,7 @@ namespace Rover.Infra
                 { "Pluto3", new Location(new Coordinates(10, 6), Direction.East) },
             };
 
-        public bool TryGet(string name, out Location location)
+        public bool TryGetByName(string name, out Location location)
         {
             if (string.IsNullOrWhiteSpace(name))
             {

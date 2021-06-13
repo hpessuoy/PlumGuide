@@ -31,7 +31,7 @@ namespace Rover.App.Controllers.Rover
                 return BadRequest($"Please provide a rover name");
             }
 
-            var rover = _roverService.Get(name);
+            var rover = _roverService.GetByName(name);
             var location = _mapper.Map<LocationDto>(rover.Location);
             return Ok(location);
         }

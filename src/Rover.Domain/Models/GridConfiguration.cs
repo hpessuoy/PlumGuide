@@ -2,6 +2,9 @@
 
 namespace Rover.Domain.Models
 {
+    /// <summary>
+    /// Grid configuration.
+    /// </summary>
     public class GridConfiguration : IGridConfiguration
     {
         public GridConfiguration(

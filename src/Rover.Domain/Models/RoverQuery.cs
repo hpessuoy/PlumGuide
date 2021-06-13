@@ -17,7 +17,7 @@ namespace Rover.Domain.Models
                 throw new ArgumentException($"'{nameof(parameter)}' cannot be null or whitespace.", nameof(parameter));
             }
 
-            var exists = _roverRepository.TryGet(parameter, out var result);
+            var exists = _roverRepository.TryGetByName(parameter, out var result);
             return exists ? result : Location.Unknown;
         }
     }

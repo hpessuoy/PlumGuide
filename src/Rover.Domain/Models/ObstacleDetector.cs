@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Rover.Domain.Models
 {
+    /// <inheritdoc />
     public class ObstacleDetector : IObstacleDetector
     {
         private static HashSet<Command> _commands = new HashSet<Command>()
@@ -18,6 +19,7 @@ namespace Rover.Domain.Models
             _obstacleQuery = obstacleQuery ?? throw new ArgumentNullException(nameof(obstacleQuery));
         }
 
+        /// <inheritdoc />
         public bool IsAccessible(Command Command, Location Location)
         {          
             if (!_commands.Contains(Command))

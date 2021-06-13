@@ -3,6 +3,9 @@ using System;
 
 namespace Rover.Domain.Models
 {
+    /// <summary>
+    /// Location of the rover including its position and direction.
+    /// </summary>
     public struct Location : IEquatable<Location>
     {
         public static Location Unknown = new Location(Coordinates.Unknown, Direction.Unknown);
@@ -13,7 +16,14 @@ namespace Rover.Domain.Models
             Direction = direction;
         }
 
+        /// <summary>
+        /// The Position of the rover.
+        /// </summary>
         public Coordinates Coordinates { get; }
+
+        /// <summary>
+        /// The direction of the rover.
+        /// </summary>
         public Direction Direction { get; }
 
         public Location With(Direction direction) => new Location(Coordinates, direction);

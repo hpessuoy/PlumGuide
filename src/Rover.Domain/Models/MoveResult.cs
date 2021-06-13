@@ -3,6 +3,9 @@ using System;
 
 namespace Rover.Domain.Models
 {
+    /// <summary>
+    /// Result of a move command.
+    /// </summary>
     public struct MoveResult : IEquatable<MoveResult>
     {
         public MoveResult(
@@ -24,8 +27,19 @@ namespace Rover.Domain.Models
             Obstacle = obstacle;
         }
 
+        /// <summary>
+        /// The status of the executed move command.
+        /// </summary>
         public MoveStatus Status { get; }
+        
+        /// <summary>
+        /// The current location of the rover after the execution of the command.
+        /// </summary>
         public Location Current { get; } 
+        
+        /// <summary>
+        /// The obstacle location if any.
+        /// </summary>
         public Location Obstacle { get; }
 
         public bool Equals(MoveResult other) => other.Status == Status

@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Rover.Domain.Models
 {
+    /// <summary>
+    /// Rover engine to execute supported commands.
+    /// </summary>
     public class RoverEngine : IRoverEngine
     {
         private readonly IGridConfiguration _gridConfiguration;
@@ -17,6 +20,7 @@ namespace Rover.Domain.Models
             _obstacleDetector = obstacleDetector ?? throw new ArgumentNullException(nameof(obstacleDetector));
         }
 
+        /// <inheritdoc />
         public MoveResult TryMove(
             Location location,
             IEnumerable<Command> commands)
@@ -41,6 +45,7 @@ namespace Rover.Domain.Models
             return result;
         }
 
+        /// <inheritdoc />
         public MoveResult TryMove(
             Location location,
             Command command)

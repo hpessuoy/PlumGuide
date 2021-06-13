@@ -23,7 +23,7 @@ namespace Rover.Domain.Service
             _roverRepository = roverRepository ?? throw new ArgumentNullException(nameof(roverRepository));
         }
 
-        public Models.Rover Get(string name)
+        public Models.Rover GetByName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -52,7 +52,7 @@ namespace Rover.Domain.Service
                 throw new ArgumentNullException(nameof(commands));
             }
 
-            var rover = Get(name);
+            var rover = GetByName(name);
 
             if (rover.Location == Location.Unknown)
             {

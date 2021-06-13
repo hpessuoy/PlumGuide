@@ -4,6 +4,10 @@ using System;
 namespace Rover.Domain.Models
 {
     // TODO: Base clase for value types.
+
+    /// <summary>
+    /// Rover position
+    /// </summary>
     public struct Coordinates : IEquatable<Coordinates>
     {
         public static Coordinates Unknown = new Coordinates(true);
